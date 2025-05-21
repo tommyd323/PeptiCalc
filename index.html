@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PeptiCalc - Peptide Dosage Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .disclaimer {
+      font-size: 12px;
+      color: #666;
+      margin-top: 30px;
+      border-top: 1px solid #ccc;
+      padding-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>PeptiCalc</h1>
+  <p><strong>Note:</strong> 1 mL = 1 cc = 100 units. This calculator allows reconstitution volume to be entered in either mL or insulin syringe units.</p>
+
+  <label for="peptide">Peptide amount (mg):</label>
+  <input type="number" id="peptide" step="0.01" />
+
+  <label for="volume">Diluent volume:</label>
+  <input type="number" id="volume" step="0.1" />
+
+  <label for="unitType">Volume unit:</label>
+  <select id="unitType">
+    <option value="ml">Milliliters (mL)</option>
+    <option value="units">Units (U-100 insulin syringe)</option>
+  </select>
+
+  <label for="dose">Desired dose (mg):</label>
+  <input type="number" id="dose" step="0.01" />
+
+  <button onclick="calculate()">Calculate</button>
+
+  <h3 id="result"></h3>
+
+  <div class="disclaimer">
+    <strong>Disclaimer:</strong> This calculator is for informational use only. Peptide dosing should always be done under the supervision of a qualified medical professional. Do not use this tool as a substitute for medical advice, diagnosis, or treatment.
+  </div>
+
+  <script>
+    function calculate() {
+      const peptide = parseFloat(document.getElementById('peptide').value);
+      let volume = parseFloat(document.getElementById('volume').value);
+      const unitType = document.getElementById('unitType').value;
+      const dose = parseFloat(document.getElementById('dose').value);
+
+      if (!peptide || !volume || !dose) {
+        document.getElementById('result').innerText = "Please fill out all fields.";
+        return;
+      }
+
+      if (unitType === 'units') {
+        volume = volume / 100; // convert units to mL
+      }
+
+      const concentration = peptide / volume; // mg per mL
+      const mLperDose = dose / concentration;
+      const unitsPerDose = mLperDose * 100;
+
+      document.getElementById('result').innerHTML =
+        `<strong>Draw:</strong> ${mLperDose.toFixed(2)} mL (${unitsPerDose.toFixed(0)} units)`;
+    }
+  </script>
+</body>
+</html>
