@@ -53,24 +53,34 @@
       color: white;
       border-color: #4CAF50;
     }
-    button.calculate {
+    button.calculate, button.reset {
       width: 33%;
       padding: 10px;
       font-size: 14px;
-      background-color: #3498db;
-      color: white;
       border: none;
       border-radius: 4px;
       cursor: pointer;
       display: block;
-      margin: 20px auto;
+      margin: 10px auto;
+    }
+    button.calculate {
+      background-color: #3498db;
+      color: white;
     }
     button.calculate:hover {
       background-color: #2980b9;
     }
+    button.reset {
+      background-color: #e74c3c;
+      color: white;
+    }
+    button.reset:hover {
+      background-color: #c0392b;
+    }
     #result {
       margin-top: 20px;
       font-size: 16px;
+      color: #333;
     }
     .disclaimer {
       font-size: 12px;
@@ -105,6 +115,7 @@
   </div>
 
   <button class="calculate" onclick="calculate()">Calculate</button>
+  <button class="reset" onclick="resetFields()">Reset</button>
 
   <div id="result"></div>
 
@@ -115,7 +126,6 @@
   <script>
     let selectedUnit = "units";
 
-    // Pre-select units on load
     window.onload = function() {
       selectUnit('units');
     };
@@ -136,8 +146,11 @@
       let volume = parseFloat(document.getElementById('volume').value);
       const dose = parseFloat(document.getElementById('dose').value);
 
-      if (!peptide || !volume || !dose) {
-        document.getElementById('result').innerText = "Please fill out all fields.";
+      const resultBox = document.getElementById('result');
+
+      if (isNaN(peptide) || isNaN(volume) || isNaN(dose)) {
+        resultBox.innerText = "❌ Please enter valid numeric values in all fields.";
+        resultBox.style.color = "red";
         return;
       }
 
@@ -150,10 +163,25 @@
       const unitsPerDose = mLperDose * 100;
       const totalDoses = peptide / dose;
 
-      document.getElementById('result').innerHTML =
+      if (totalDoses < 1) {
+        resultBox.innerText = "⚠️ Error: Your total vial dosage is too low to yield even 1 full dose at the specified amount.";
+        resultBox.style.color = "red";
+        return;
+      }
+
+      resultBox.style.color = "#333";
+      resultBox.innerHTML =
         `<strong>Draw:</strong> ${unitsPerDose.toFixed(0)} units (${mLperDose.toFixed(2)} mL)<br>
          To get a dose of ${dose} mg<br>
          Once reconstituted, this vial will contain approximately ${totalDoses.toFixed(2)} doses at that amount.`;
+    }
+
+    function resetFields() {
+      document.getElementById('peptide').value = "";
+      document.getElementById('dose').value = "";
+      document.getElementById('volume').value = "";
+      document.getElementById('result').innerHTML = "";
+      selectUnit('units');
     }
   </script>
 </body>
