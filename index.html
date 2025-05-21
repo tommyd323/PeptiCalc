@@ -9,27 +9,65 @@
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
-      max-width: 600px;
+      max-width: 700px;
       margin: auto;
-    }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      font-size: 16px;
-    }
-    .unit-toggle {
-      display: flex;
-      gap: 10px;
-      margin: 10px 0;
-    }
-    .unit-toggle button {
-      flex: 1;
-      padding: 10px;
-      font-size: 16px;
+      background-color: #f9f9f9;
     }
     h1 {
       text-align: center;
+      color: #2c3e50;
+    }
+    label {
+      display: inline-block;
+      width: 60%;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    input {
+      width: 30%;
+      padding: 6px;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+    .input-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 10px 0;
+    }
+    .unit-toggle {
+      display: inline-flex;
+      gap: 10px;
+      margin-left: 10px;
+    }
+    .unit-toggle button {
+      padding: 6px 12px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      background-color: #eee;
+      cursor: pointer;
+    }
+    .unit-toggle button.active {
+      background-color: #4CAF50;
+      color: white;
+      border-color: #4CAF50;
+    }
+    button.calculate {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button.calculate:hover {
+      background-color: #2980b9;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 16px;
     }
     .disclaimer {
       font-size: 12px;
@@ -44,23 +82,28 @@
   <h1>PeptiCalc</h1>
   <p><strong>Note:</strong> 1 mL = 1 cc = 100 units. This calculator allows reconstitution volume to be entered in either mL or insulin syringe units.</p>
 
-  <label for="peptide">Total vial dosage (mg):</label>
-  <input type="number" id="peptide" step="0.01" />
-
-  <label for="dose">Dose desired (mg):</label>
-  <input type="number" id="dose" step="0.01" />
-
-  <label for="volume">Bacteriostatic water amount to be used: (Select Units or mL)</label>
-  <input type="number" id="volume" step="0.1" />
-
-  <div class="unit-toggle">
-    <button type="button" onclick="selectUnit('units')" id="unitBtnUnits">Units</button>
-    <button type="button" onclick="selectUnit('ml')" id="unitBtnMl">mL</button>
+  <div class="input-group">
+    <label for="peptide">Total vial dosage (mg):</label>
+    <input type="number" id="peptide" step="0.01" />
   </div>
 
-  <button onclick="calculate()">Calculate</button>
+  <div class="input-group">
+    <label for="dose">Dose desired (mg):</label>
+    <input type="number" id="dose" step="0.01" />
+  </div>
 
-  <h3 id="result"></h3>
+  <div class="input-group">
+    <label for="volume">Bacteriostatic water amount to be used: (Select Units or mL)</label>
+    <input type="number" id="volume" step="0.1" />
+    <div class="unit-toggle">
+      <button type="button" onclick="selectUnit('units')" id="unitBtnUnits">Units</button>
+      <button type="button" onclick="selectUnit('ml')" id="unitBtnMl">mL</button>
+    </div>
+  </div>
+
+  <button class="calculate" onclick="calculate()">Calculate</button>
+
+  <div id="result"></div>
 
   <div class="disclaimer">
     <strong>Disclaimer:</strong> This calculator is for informational use only. Peptide dosing should always be done under the supervision of a qualified medical professional. Do not use this tool as a substitute for medical advice, diagnosis, or treatment.
@@ -71,8 +114,13 @@
 
     function selectUnit(unit) {
       selectedUnit = unit;
-      document.getElementById('unitBtnUnits').style.backgroundColor = unit === 'units' ? '#ccc' : '';
-      document.getElementById('unitBtnMl').style.backgroundColor = unit === 'ml' ? '#ccc' : '';
+      document.getElementById('unitBtnUnits').classList.remove('active');
+      document.getElementById('unitBtnMl').classList.remove('active');
+      if (unit === 'units') {
+        document.getElementById('unitBtnUnits').classList.add('active');
+      } else {
+        document.getElementById('unitBtnMl').classList.add('active');
+      }
     }
 
     function calculate() {
