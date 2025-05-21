@@ -59,33 +59,35 @@
     }
     .input-group {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
       margin-bottom: 15px;
     }
     label {
-      flex: 1;
       font-weight: bold;
-      margin-right: 10px;
-    }
-    input, select {
-      flex: 1;
-      padding: 8px;
-      font-size: 14px;
+      margin-bottom: 5px;
     }
     .input-inline {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       align-items: center;
+      flex-wrap: wrap;
+    }
+    input, select {
+      padding: 8px;
+      font-size: 14px;
+      width: 100%;
+      max-width: 160px;
       flex: 1;
     }
     .unit-toggle {
       display: flex;
+      flex-direction: column;
+      align-items: center;
       gap: 5px;
     }
     .unit-toggle button {
       width: 60px;
-      padding: 8px;
+      padding: 6px;
       font-size: 13px;
       border: 1px solid #ccc;
       background-color: #eee;
@@ -100,6 +102,7 @@
     .button-row {
       display: flex;
       justify-content: center;
+      flex-wrap: wrap;
       gap: 10px;
       margin-top: 20px;
     }
@@ -155,20 +158,24 @@
 
     <div class="input-group">
       <label for="peptide">Total vial dosage:</label>
-      <input type="number" id="peptide" step="0.01" />
-      <select id="peptideUnit">
-        <option value="mg" selected>mg</option>
-        <option value="mcg">mcg</option>
-      </select>
+      <div class="input-inline">
+        <input type="number" id="peptide" step="0.01" />
+        <select id="peptideUnit">
+          <option value="mg" selected>mg</option>
+          <option value="mcg">mcg</option>
+        </select>
+      </div>
     </div>
 
     <div class="input-group">
       <label for="dose">Dose desired:</label>
-      <input type="number" id="dose" step="0.01" />
-      <select id="doseUnit">
-        <option value="mg" selected>mg</option>
-        <option value="mcg">mcg</option>
-      </select>
+      <div class="input-inline">
+        <input type="number" id="dose" step="0.01" />
+        <select id="doseUnit">
+          <option value="mg" selected>mg</option>
+          <option value="mcg">mcg</option>
+        </select>
+      </div>
     </div>
 
     <div class="input-group">
