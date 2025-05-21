@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Cache-Control" content="no-store" />
   <title>PeptiCalc</title>
   <style>
     body {
@@ -53,14 +54,16 @@
       border-color: #4CAF50;
     }
     button.calculate {
-      width: 100%;
+      width: 33%;
       padding: 10px;
-      font-size: 16px;
+      font-size: 14px;
       background-color: #3498db;
       color: white;
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      display: block;
+      margin: 20px auto;
     }
     button.calculate:hover {
       background-color: #2980b9;
@@ -112,6 +115,11 @@
   <script>
     let selectedUnit = "units";
 
+    // Pre-select units on load
+    window.onload = function() {
+      selectUnit('units');
+    };
+
     function selectUnit(unit) {
       selectedUnit = unit;
       document.getElementById('unitBtnUnits').classList.remove('active');
@@ -140,12 +148,12 @@
       const concentration = peptide / volume; // mg per mL
       const mLperDose = dose / concentration;
       const unitsPerDose = mLperDose * 100;
-      const totalDoses = Math.floor(peptide / dose);
+      const totalDoses = peptide / dose;
 
       document.getElementById('result').innerHTML =
         `<strong>Draw:</strong> ${unitsPerDose.toFixed(0)} units (${mLperDose.toFixed(2)} mL)<br>
          To get a dose of ${dose} mg<br>
-         This vial contains approximately ${totalDoses} doses at that amount.`;
+         Once reconstituted, this vial will contain approximately ${totalDoses.toFixed(2)} doses at that amount.`;
     }
   </script>
 </body>
