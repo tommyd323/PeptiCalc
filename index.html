@@ -14,88 +14,21 @@
   <meta property="og:type" content="website">
   <title>PeptiCalc</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      max-width: 700px;
-      margin: auto;
-      background-color: #f9f9f9;
-    }
-    h1 {
-      text-align: center;
-      color: #2c3e50;
-    }
-    label {
-      display: inline-block;
-      width: 60%;
-      margin-bottom: 10px;
-      font-weight: bold;
-    }
-    input {
-      width: 30%;
-      padding: 6px;
-      font-size: 14px;
-      margin-bottom: 15px;
-    }
-    .input-group {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin: 10px 0;
-    }
-    .unit-toggle {
-      display: inline-flex;
-      gap: 10px;
-      margin-left: 10px;
-    }
-    .unit-toggle button {
-      padding: 6px 12px;
-      font-size: 14px;
-      border: 1px solid #ccc;
-      background-color: #eee;
-      cursor: pointer;
-    }
-    .unit-toggle button.active {
-      background-color: #4CAF50;
-      color: white;
-      border-color: #4CAF50;
-    }
-    button.calculate, button.reset {
-      width: 33%;
-      padding: 10px;
-      font-size: 14px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      display: block;
-      margin: 10px auto;
-    }
-    button.calculate {
-      background-color: #3498db;
-      color: white;
-    }
-    button.calculate:hover {
-      background-color: #2980b9;
-    }
-    button.reset {
-      background-color: #e74c3c;
-      color: white;
-    }
-    button.reset:hover {
-      background-color: #c0392b;
-    }
-    #result {
-      margin-top: 20px;
-      font-size: 16px;
-      color: #333;
-    }
-    .disclaimer {
-      font-size: 12px;
-      color: #666;
-      margin-top: 30px;
-      border-top: 1px solid #ccc;
-      padding-top: 10px;
-    }
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 700px; margin: auto; background-color: #f9f9f9; }
+    h1 { text-align: center; color: #2c3e50; }
+    label { display: inline-block; width: 60%; margin-bottom: 10px; font-weight: bold; }
+    input, select { width: 30%; padding: 6px; font-size: 14px; margin-bottom: 15px; }
+    .input-group { display: flex; align-items: center; justify-content: space-between; margin: 10px 0; }
+    .unit-toggle { display: inline-flex; gap: 10px; margin-left: 10px; }
+    .unit-toggle button { padding: 6px 12px; font-size: 14px; border: 1px solid #ccc; background-color: #eee; cursor: pointer; }
+    .unit-toggle button.active { background-color: #4CAF50; color: white; border-color: #4CAF50; }
+    button.calculate, button.reset { width: 33%; padding: 10px; font-size: 14px; border: none; border-radius: 4px; cursor: pointer; display: block; margin: 10px auto; }
+    button.calculate { background-color: #3498db; color: white; }
+    button.calculate:hover { background-color: #2980b9; }
+    button.reset { background-color: #e74c3c; color: white; }
+    button.reset:hover { background-color: #c0392b; }
+    #result { margin-top: 20px; font-size: 16px; color: #333; }
+    .disclaimer { font-size: 12px; color: #666; margin-top: 30px; border-top: 1px solid #ccc; padding-top: 10px; }
   </style>
 </head>
 <body>
@@ -103,13 +36,21 @@
   <p><strong>Note:</strong> 1 mL = 1 cc = 100 units. This calculator allows reconstitution volume to be entered in either mL or insulin syringe units.</p>
 
   <div class="input-group">
-    <label for="peptide">Total vial dosage (mg):</label>
+    <label for="peptide">Total vial dosage:</label>
     <input type="number" id="peptide" step="0.01" />
+    <select id="peptideUnit">
+      <option value="mg" selected>mg</option>
+      <option value="mcg">mcg</option>
+    </select>
   </div>
 
   <div class="input-group">
-    <label for="dose">Dose desired (mg):</label>
+    <label for="dose">Dose desired:</label>
     <input type="number" id="dose" step="0.01" />
+    <select id="doseUnit">
+      <option value="mg" selected>mg</option>
+      <option value="mcg">mcg</option>
+    </select>
   </div>
 
   <div class="input-group">
@@ -149,10 +90,12 @@
     }
 
     function calculate() {
-      const peptide = parseFloat(document.getElementById('peptide').value);
+      let peptide = parseFloat(document.getElementById('peptide').value);
+      let dose = parseFloat(document.getElementById('dose').value);
       let volume = parseFloat(document.getElementById('volume').value);
-      const dose = parseFloat(document.getElementById('dose').value);
 
+      const peptideUnit = document.getElementById('peptideUnit').value;
+      const doseUnit = document.getElementById('doseUnit').value;
       const resultBox = document.getElementById('result');
 
       if (isNaN(peptide) || isNaN(volume) || isNaN(dose)) {
@@ -161,11 +104,11 @@
         return;
       }
 
-      if (selectedUnit === 'units') {
-        volume = volume / 100;
-      }
+      if (peptideUnit === "mcg") peptide = peptide / 1000;
+      if (doseUnit === "mcg") dose = dose / 1000;
+      if (selectedUnit === 'units') volume = volume / 100;
 
-      const concentration = peptide / volume; // mg per mL
+      const concentration = peptide / volume;
       const mLperDose = dose / concentration;
       const unitsPerDose = mLperDose * 100;
       const totalDoses = peptide / dose;
@@ -179,7 +122,7 @@
       resultBox.style.color = "#333";
       resultBox.innerHTML =
         `<strong>Draw:</strong> ${unitsPerDose.toFixed(0)} units (${mLperDose.toFixed(2)} mL)<br>
-         To get a dose of ${dose} mg<br>
+         To get a dose of ${dose.toFixed(3)} mg<br>
          Once reconstituted, this vial will contain approximately ${totalDoses.toFixed(2)} doses at that amount.`;
     }
 
@@ -188,9 +131,10 @@
       document.getElementById('dose').value = "";
       document.getElementById('volume').value = "";
       document.getElementById('result').innerHTML = "";
+      document.getElementById('peptideUnit').value = "mg";
+      document.getElementById('doseUnit').value = "mg";
       selectUnit('units');
     }
   </script>
 </body>
 </html>
-
