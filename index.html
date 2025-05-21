@@ -59,9 +59,8 @@
     }
     .input-group {
       display: flex;
-      flex-direction: row;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       margin-bottom: 15px;
     }
     label {
@@ -74,16 +73,20 @@
       padding: 8px;
       font-size: 14px;
     }
+    .input-inline {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex: 1;
+    }
     .unit-toggle {
       display: flex;
-      justify-content: space-between;
-      margin-top: 5px;
+      gap: 5px;
     }
     .unit-toggle button {
-      flex: 1;
-      margin: 0 5px;
+      width: 60px;
       padding: 8px;
-      font-size: 14px;
+      font-size: 13px;
       border: 1px solid #ccc;
       background-color: #eee;
       cursor: pointer;
@@ -94,14 +97,18 @@
       color: white;
       border-color: #4CAF50;
     }
+    .button-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
     button.calculate, button.reset {
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
+      padding: 10px 20px;
+      font-size: 15px;
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      margin-bottom: 10px;
     }
     button.calculate {
       background-color: #3498db;
@@ -144,7 +151,7 @@
   </header>
   <main>
     <h2>Peptide Dosage Calculator</h2>
-    <p style="text-align: center;"><strong>Note:</strong> 1 mL = 1 cc = 100 units. Enter bacteriostatic water in either mL or units.</p>
+    <p style="text-align: center;"><strong>Note:</strong> 1 mL = 1 cc = 100 units. Enter bacteriostatic water in either mL or insulin units.</p>
 
     <div class="input-group">
       <label for="peptide">Total vial dosage:</label>
@@ -165,17 +172,20 @@
     </div>
 
     <div class="input-group">
-      <label for="volume">Bacteriostatic water to use:</label>
-      <input type="number" id="volume" step="0.1" />
+      <label for="volume">Amount of bacteriostatic water to use:</label>
+      <div class="input-inline">
+        <input type="number" id="volume" step="0.1" />
+        <div class="unit-toggle">
+          <button type="button" onclick="selectUnit('units')" id="unitBtnUnits">Units</button>
+          <button type="button" onclick="selectUnit('ml')" id="unitBtnMl">mL</button>
+        </div>
+      </div>
     </div>
 
-    <div class="unit-toggle">
-      <button type="button" onclick="selectUnit('units')" id="unitBtnUnits">Units</button>
-      <button type="button" onclick="selectUnit('ml')" id="unitBtnMl">mL</button>
+    <div class="button-row">
+      <button class="calculate" onclick="calculate()">Calculate</button>
+      <button class="reset" onclick="resetFields()">Reset</button>
     </div>
-
-    <button class="calculate" onclick="calculate()">Calculate</button>
-    <button class="reset" onclick="resetFields()">Reset</button>
 
     <div id="result"></div>
 
@@ -187,28 +197,28 @@
   <script>
     let selectedUnit = "units";
 
-    window.onload = function() {
-      selectUnit('units');
+    window.onload = function () {
+      selectUnit("units");
     };
 
     function selectUnit(unit) {
       selectedUnit = unit;
-      document.getElementById('unitBtnUnits').classList.remove('active');
-      document.getElementById('unitBtnMl').classList.remove('active');
-      if (unit === 'units') {
-        document.getElementById('unitBtnUnits').classList.add('active');
+      document.getElementById("unitBtnUnits").classList.remove("active");
+      document.getElementById("unitBtnMl").classList.remove("active");
+      if (unit === "units") {
+        document.getElementById("unitBtnUnits").classList.add("active");
       } else {
-        document.getElementById('unitBtnMl').classList.add('active');
+        document.getElementById("unitBtnMl").classList.add("active");
       }
     }
 
     function calculate() {
-      let peptide = parseFloat(document.getElementById('peptide').value);
-      let dose = parseFloat(document.getElementById('dose').value);
-      let volume = parseFloat(document.getElementById('volume').value);
-      const peptideUnit = document.getElementById('peptideUnit').value;
-      const doseUnit = document.getElementById('doseUnit').value;
-      const resultBox = document.getElementById('result');
+      let peptide = parseFloat(document.getElementById("peptide").value);
+      let dose = parseFloat(document.getElementById("dose").value);
+      let volume = parseFloat(document.getElementById("volume").value);
+      const peptideUnit = document.getElementById("peptideUnit").value;
+      const doseUnit = document.getElementById("doseUnit").value;
+      const resultBox = document.getElementById("result");
 
       if (isNaN(peptide) || isNaN(volume) || isNaN(dose)) {
         resultBox.innerText = "❌ Please enter valid numeric values in all fields.";
@@ -240,13 +250,13 @@
     }
 
     function resetFields() {
-      document.getElementById('peptide').value = "";
-      document.getElementById('dose').value = "";
-      document.getElementById('volume').value = "";
-      document.getElementById('peptideUnit').value = "mg";
-      document.getElementById('doseUnit').value = "mg";
-      document.getElementById('result').innerHTML = "";
-      selectUnit('units');
+      document.getElementById("peptide").value = "";
+      document.getElementById("dose").value = "";
+      document.getElementById("volume").value = "";
+      document.getElementById("peptideUnit").value = "mg";
+      document.getElementById("doseUnit").value = "mg";
+      document.getElementById("result").innerHTML = "";
+      selectUnit("units");
     }
   </script>
 </body>
