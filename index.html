@@ -152,7 +152,7 @@
       <a href="faq.html">FAQ</a>
     </nav>
   </header>
-  <main style="display: flex; flex-direction: column; align-items: center;">
+  <main>
     <h2>Peptide Dosage Calculator</h2>
     <p style="text-align: center;"><strong>Note:</strong> 1 mL = 1 cc = 100 units. Enter bacteriostatic water in either mL or insulin units.</p>
 
@@ -248,12 +248,16 @@
         return;
       }
 
-      const displayDose = doseUnit === "mcg" ? (dose * 1000).toFixed(1) + " mcg" : dose.toFixed(3) + " mg";
+      
+const displayDose = doseUnit === "mcg"
+  ? (dose * 1000).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + " mcg"
+  : dose.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 }) + " mg";
+
 
       resultBox.style.color = "#333";
       resultBox.innerHTML = `<strong>Draw:</strong> ${unitsPerDose.toFixed(0)} units (${mLperDose.toFixed(2)} mL)<br>
         To get a dose of ${displayDose}<br>
-        Once reconstituted, this vial will contain approximately ${totalDoses.toFixed(2)} doses at that amount.`;
+        Once reconstituted, this vial will contain approximately ${totalDoses.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 })} doses at that amount.`;
     }
 
     function resetFields() {
